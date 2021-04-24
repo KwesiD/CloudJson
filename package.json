@@ -1,0 +1,16 @@
+{
+  "name": "CloudJson",
+  "version": "1.0.0",
+  "description": "Your Figma plugin",
+  "main": "code.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.19.1",
+    "@types/node": "^14.14.31"
+  },
+  "dependencies": {}
+}
