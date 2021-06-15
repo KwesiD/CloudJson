@@ -31,22 +31,45 @@ figma.ui.onmessage = msg => {
             if (node.type === "TEXT") {
                 const font = node.fontName;
                 figma.loadFontAsync(font).then(() => {
-                    console.log(node.name);
-                    if (node_name in params) {
+                    //console.log(node.name)
+                    if (node_name === "greeting") {
+                        let template = node.characters;
+                        node.characters = template.replace("XX XX", params["customer_name"]);
+                    }
+                    else if (["poem_text", "poem_title", "context"].includes(node_name)) {
+                        let initWidth = node.width;
+                        let x = node.x;
+                        let y = node.y;
+                        let height = node.height;
+                        node.textAutoResize = "WIDTH_AND_HEIGHT";
                         node.characters = params[node_name];
-                        if (node_name in ["%first_name", "%last_name"]) {
-                            let offset = 0;
-                            let x = (currFrame.width / 2 - node.width / 2);
-                            const y = node.y + (.25 * node.height);
-                            if (node.width > currFrame.width) {
-                                offset = .10 * currFrame.width;
-                                let ratio = (currFrame.width - (2 * offset)) / node.width;
-                                node.fontSize = ratio * node.fontSize;
-                                x = offset;
-                            }
-                            node.x = x;
-                            node.y = y;
-                        }
+                        let currWidth = node.width;
+                        let multiplier = Math.ceil(currWidth / initWidth) + 1;
+                        console.log(initWidth);
+                        console.log(height + " " + currWidth + " " + multiplier);
+                        console.log(height);
+                        let newHeight = height * multiplier;
+                        console.log(newHeight);
+                        node.resize(initWidth, newHeight);
+                        node.textAutoResize = "NONE";
+                        node.x = x;
+                        node.y = y;
+                    }
+                    else if (node_name in params) {
+                        node.characters = params[node_name];
+                        //   if(["first_name","last_name"].includes(node_name)){
+                        //       let offset = 0;
+                        //       let x = (currFrame.width / 2 - node.width / 2);
+                        //       const y = node.y + (.25 * node.height);
+                        //       if (node.width > currFrame.width) {
+                        //           offset = .10 * currFrame.width;
+                        //           let ratio = (currFrame.width - (2 * offset)) / node.width;
+                        //           node.fontSize = ratio * node.fontSize;
+                        //           x = offset;
+                        //       }
+                        //       node.x = x;
+                        //       node.y = y;
+                        //   }
                     }
                 });
             }
@@ -93,6 +116,15 @@ figma.ui.onmessage = msg => {
                 // }
             }
         });
+        //   let poem_title = figma.root.findOne(node => node.name == "%poem_title");
+        //   let poem_text = figma.root.findOne(node => node.name == "%poem_text");
+        //   let poem_context = figma.root.findOne(node => node.name == "%context");
+        //   let multiplier = Math.ceil(poem_title.height/)
+        //   console.log("Poem Title: " + poem_title.y + " " + poem_title.height);
+        //   poem_text.y = poem_title.y + (2*poem_title.height) ;
+        //   console.log("Poem Text: " + poem_text.y + " " + poem_text.height);
+        //poem_context.y = poem_text.y + poem_text.height; 
+        //console.log(poem_title);
         //console.log(nodes);
         // readFile('student.json', (err, data) => {
         //     if (err) throw err;
